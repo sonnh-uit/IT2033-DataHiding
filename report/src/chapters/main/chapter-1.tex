@@ -1,0 +1,18 @@
+\chapter{Giới thiệu}
+\label{chapter1}
+\section{Ẩn thông tin và các đặc điểm của nó}
+Ẩn giấu thông tin là phương pháp đang được sử dụng để  bảo mật và bí mật cho việc trao đổi dữ liệu. Thay vì dựa vào việc mã hóa thông điệp để bảo vệ nó khỏi sự xâm nhập, ẩn giấu thông tin đặt mục tiêu vào việc nhúng các thông tin nhạy cảm - từ các tệp tin, tin nhắn, hình ảnh, âm thanh cho đến video - vào bên trong các tệp tin gốc khác, có thể thuộc cùng một loại hoặc khác loại. Quá trình này được thực hiện một cách khéo léo để đảm bảo rằng dữ liệu ẩn được bảo vệ chặt chẽ và không thể dễ dàng nhận biết bởi bất kỳ ai ngoài các bên liên quan, chẳng hạn như người gửi và người nhận.
+
+Trong lĩnh vực bảo mật thông tin, mật mã thường được sử dụng để mã hóa và giải mã thông điệp, tạo ra một tầng bảo vệ vững chắc. Ẩn giấu thông tin tập trung vào việc chèn thông tin bí mật mà không gây ra bất kỳ thay đổi nào trong dữ liệu gốc. Điều này đặc biệt hữu ích khi cần duy trì tính nguyên vẹn của dữ liệu gốc mà vẫn muốn lưu trữ thông tin bí mật.
+
+Tính không thể nhận thấy là một đặc trưng quan trọng của ẩn giấu thông tin, được gọi là tính trong suốt hoặc hiệu suất chống phát hiện. Khả năng này đảm bảo rằng dữ liệu ẩn không dễ dàng bị phát hiện bởi những phương pháp kiểm tra thông thường. Để nâng cao tính trong suốt của kỹ thuật này, có thể thực hiện các cải tiến trong phương pháp ẩn giấu thông tin hoặc tăng cường mối quan hệ giữa thông tin bí mật và tệp chứa thông tin.
+
+\section{Ẩn thông tin dựa trên bit ít quan trọng nhất (LSB Steganography)}
+
+Least Significant Bit (LSB) Steganography là một kỹ thuật trong lĩnh vực ẩn giấu thông tin, được sử dụng để nhúng thông tin bí mật vào trong một tập tin đa phương tiện, chẳng hạn như hình ảnh, âm thanh hoặc video. Kỹ thuật này tận dụng tính chất của các bit ít quan trọng nhất (Least Significant Bits) trong các dữ liệu số như điểm ảnh, mẫu âm thanh hoặc khung hình video. LSB Steganography cho phép nhúng thông tin ẩn vào những bit ít quan trọng này mà không gây ra sự thay đổi đáng kể cho dữ liệu gốc.
+
+Nguyên tắc hoạt động của LSB Steganography rất đơn giản: trong một tập tin đa phương tiện, các dữ liệu như điểm ảnh thường được biểu diễn bằng các chuỗi bit. Các bit ít quan trọng nhất thường có giá trị thấp hơn và có xu hướng thay đổi ít ảnh hưởng đến hình ảnh hoặc âm thanh tổng thể. Điều này tạo ra một cơ hội tốt để thay thế những bit này bằng các bit của thông tin ẩn, giữ nguyên tính nguyên vẹn của dữ liệu gốc mà vẫn chèn thông tin bí mật vào.
+
+Một ví dụ cụ thể có thể là nhúng một chuỗi văn bản thông điệp vào một hình ảnh bằng cách thay thế các bit ít quan trọng nhất của các điểm ảnh trong hình ảnh đó. Khi xem hình ảnh, sự thay đổi này thường không dễ dàng bị nhận thấy bởi mắt người. Tuy nhiên, người nhận có thể sử dụng một thuật toán tương ứng để trích xuất thông điệp ẩn ra khỏi hình ảnh.
+
+Mặc dù LSB Steganography đơn giản và dễ triển khai, nó vẫn có nhược điểm. Việc nhúng thông tin quá nhiều có thể làm thay đổi tới mức có thể nhận thấy được trong dữ liệu đầu ra. Ngoài ra, nếu người tấn công biết rằng một hình ảnh hoặc tập tin âm thanh đã được sử dụng để nhúng thông tin, họ có thể dễ dàng tìm ra thông điệp ẩn.
