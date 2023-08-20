@@ -5,7 +5,7 @@ FROM python:3.10
 RUN apt-get update && apt-get install -y \
 python3-pip \
 && pip3 install --upgrade pip \
-&& pip3 install scikit-image matplotlib numpy opencv-python pyqt5 \
+&& pip3 install scikit-image matplotlib numpy opencv-python pyqt5 seaborn \
 && apt-get install ffmpeg libsm6 libxext6 -y
 
 # Set the working directory

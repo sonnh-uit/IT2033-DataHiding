@@ -42,7 +42,7 @@ def lsb(y,message,img):
                 img[y[i][0],y[i][1],y[i][2]]=img[y[i][0],y[i][1],y[i][2]]+1
     return img
 def decode_lsb(img):
-    mess="VFBPPxpV3VWAH"
+    mess="iEzo5vpLzGuAjCzqZpLw74E88GonKYeygxmAbvUjU9MiViKLoD7JtzAVawqELbpmAr9Tftq87nzgUGo5v98YBvG88jJynfpt2epDJZgTWVdctiiHyduVrNieXjjTgNiR"
     binary_string = ''.join(format(ord(char), '08b') for char in mess)
     text=""
     for i in range(0,len(binary_string)): # chỗ này là để lấy độ dài của message cần gửi
@@ -61,7 +61,7 @@ if __name__ == "__main__":
     img=ReadImage("lena.png")
     PM_c=np.float16(np.average(img))
     print(PM_c)
-    Text = "Hello, world!" #thong tin can nen
+    Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam." #thong tin can nen
     Ascii_Values = [ord(char) for char in Text]
     PM_s=np.float16(np.average(Ascii_Values))
     print(PM_s)
@@ -76,8 +76,8 @@ if __name__ == "__main__":
     y=embedding_position_matrix(sorted_indices,height,width)
     img=lsb(y,Text,img)
     RGB_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    plt.imsave("test.png", RGB_img)
-    img1=ReadImage("test.png")
+    plt.imsave("lena-emb.png", RGB_img)
+    img1=ReadImage("lena-emb.png")
     print(decode_lsb(img1))
 
 
