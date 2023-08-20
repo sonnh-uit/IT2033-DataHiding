@@ -7,7 +7,7 @@ services:
     volumes:
       - ./app/src:/app
     working_dir: /app
-    command: ["python3", "lsb/chaotic-map.py"]
+    command: ["python3", "lsb/improved_chaotic.py"]
     # command: ["python3", ".idea/context.py"]
   # report-build:
   #   build:
