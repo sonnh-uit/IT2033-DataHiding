@@ -463,3 +463,11 @@ TSWLatexianTemp*
 #*Notes.bib
 .idea
 .idea/*
+
+results
+results/*
+lsb
+lsb/*
+
+
+.vagrant

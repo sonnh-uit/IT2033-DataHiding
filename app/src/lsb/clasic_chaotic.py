@@ -42,7 +42,7 @@ def draw_logisticmap(context):
     plt.grid(True)
     
     # Save the plot as an image and then close the figure
-    plt.savefig("exist_logistic_map.png")
+    plt.savefig("results/figures/exist_logistic_map.png")
     plt.close()
 
 # Function to draw sine map
@@ -72,7 +72,7 @@ def draw_sinemap(context):
     plt.grid(True)
     
     # Save the plot as an image and then close the figure
-    plt.savefig("exist_sine_map.png")
+    plt.savefig("results/figures/exist_sine_map.png")
     plt.close()
 
 # Context dictionary for sine map

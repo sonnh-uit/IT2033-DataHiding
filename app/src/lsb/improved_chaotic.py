@@ -42,7 +42,7 @@ def draw_logisticmap(context):
     plt.grid(True)
     
     # Save the plot as an image and then close the figure
-    plt.savefig("improve_logistic_map.png")
+    plt.savefig("results/figures/improve_logistic_map.png")
     plt.close()
 
 def draw_sinemap(context):
@@ -71,7 +71,7 @@ def draw_sinemap(context):
     plt.grid(True)
     
     # Save the plot as an image and then close the figure
-    plt.savefig("improved_exist_sine_map.png")
+    plt.savefig("results/figures/improved_sine_map.png")
     plt.close()
 
 context_losgistic_map = {
@@ -88,6 +88,5 @@ context_sinemap_map = {
 }
 
 if __name__ == "__main__":
-    # draw_logisticmap(context_losgistic_map)  # Call function to draw logistic map
-
+    draw_logisticmap(context_losgistic_map)  # Call function to draw logistic map
     draw_sinemap(context_sinemap_map) # Call function to draw sine map

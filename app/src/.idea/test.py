@@ -8,13 +8,6 @@ x_k=0.45647
 x=[]
 def ReadImage(name):
     img=cv2.imread(name)
-#Displaying image using plt.imshow() method
-    #RGB_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#Displaying image using plt.imshow() method
-    #plt.imshow(RGB_img)
-# hold the window
-    #plt.waitforbuttonpress()
-    #plt.close('all')
     return img
 def ChaoticsMap(u0,x0,s):
     x.append(x0)
