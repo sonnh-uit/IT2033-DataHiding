@@ -1,21 +1,22 @@
 version: '3'
 services:
-  # data-hiding:
-  #   build:
-  #     context: app
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./app/src:/app
-  #   working_dir: /app
-  #   command: ["python3", "lsb/read_img.py"]
-  steganogan:
+  data-hiding:
     build:
-      context: steganogan
+      context: app
       dockerfile: Dockerfile
     volumes:
-      - ./steganogan/src:/app
+      - ./app/src:/app
     working_dir: /app
-    command: ["tail", "-f", "/dev/null"]
+    command: ["python3", "lsb/read_img.py"]
+  # steganogan:
+  #   build:
+  #     context: steganogan
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./steganogan/src:/app
+  #   working_dir: /app
+  #   command: ["python3", "input/write-lorem.py"]
+    # command: ["tail", "-f", "/dev/null"]
   # report-build:
   #   build:
   #     context: report
