@@ -1,13 +1,22 @@
 version: '3'
 services:
-  data-hiding:
+  # data-hiding:
+  #   build:
+  #     context: app
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./app/src:/app
+  #   working_dir: /app
+  #   command: ["python3", "lsb/read_img.py"]
+  mid-task:
     build:
-      context: app
+      context: task/src
       dockerfile: Dockerfile
     volumes:
-      - ./app/src:/app
+      - ./task/src:/app
     working_dir: /app
-    command: ["python3", "lsb/read_img.py"]
+    # command: ["tail", "-f", "/dev/null"]
+    command: ["python3", "watermarking.py"]
   # steganogan:
   #   build:
   #     context: steganogan

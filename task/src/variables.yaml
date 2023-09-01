@@ -1,0 +1,20 @@
+---
+init:
+  encoded_imgs_dir: encoded_image/
+  decoded_imgs_dir: decoded_output/
+  origin_imgs_cover_dir: origin_imgs
+
+test:
+    - test_case:
+        name: "Lena with small secret message"
+        cover_img: lena.png
+        secret_message: "This is small secret message"
+    - test_case:
+        name: "Babylon with small secret"
+        cover_img: babylon.png
+        secret_message: "This is small secret message"
+    - test_case:
+        name: "Babylon with small secret"
+        cover_img: pepper.png
+        secret_message: "This is small secret message"
+
