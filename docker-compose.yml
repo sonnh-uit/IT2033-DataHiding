@@ -1,22 +1,14 @@
 version: '3'
 services:
-  # data-hiding:
-  #   build:
-  #     context: app
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./app/src:/app
-  #   working_dir: /app
-  #   command: ["python3", "lsb/read_img.py"]
-  mid-task:
+  data-hiding:
     build:
-      context: task/src
+      context: app
       dockerfile: Dockerfile
     volumes:
-      - ./task/src:/app
+      - ./app/src:/app
     working_dir: /app
-    # command: ["tail", "-f", "/dev/null"]
-    command: ["python3", "watermarking.py"]
+    # command: ["python3", "lsb/read_img.py"]
+    command: ["tail", "-f", "/dev/null"]
   # steganogan:
   #   build:
   #     context: steganogan
@@ -24,7 +16,7 @@ services:
   #   volumes:
   #     - ./steganogan/src:/app
   #   working_dir: /app
-  #   command: ["python3", "input/write-lorem.py"]
+  #   command: ["python3", "input/test-case.py"]
     # command: ["tail", "-f", "/dev/null"]
   # report-build:
   #   build:
@@ -34,4 +26,4 @@ services:
   #     - ./report/src:/app
   #   working_dir: /app
   #   command: ["pdflatex", "IT2033.tex"]
-    # image_path = "test/imgs/lena.png"
+  #   image_path = "test/imgs/lena.png"

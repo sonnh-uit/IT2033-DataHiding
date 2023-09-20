@@ -5,4 +5,4 @@ RUN apt-get update && apt-get install -y \
 python3-pip \
 && pip3 install --upgrade pip \
 && pip3 install scikit-image matplotlib numpy opencv-python pyqt5 seaborn steganogan \ 
-&& pip3 install lipsum
+&& pip3 install lipsum numpy torch torchsummary

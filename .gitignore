@@ -471,3 +471,9 @@ lsb/*
 
 
 .vagrant
+
+decoded_output/*
+decoded_output
+encoded_image/*
+encoded_image
+

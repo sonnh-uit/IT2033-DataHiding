@@ -4,8 +4,8 @@ import itertools
 from PIL import Image
 
 
-quant = np.array([[16,11,10,16,24,40,51,61],      # QUANTIZATION TABLE
-                    [12,12,14,19,26,58,60,55],    # required for DCT
+quant = np.array([[16,11,10,16,24,40,51,61],      
+                    [12,12,14,19,26,58,60,55],   
                     [14,13,16,24,40,57,69,56],
                     [14,17,22,29,51,87,80,62],
                     [18,22,37,56,68,109,103,77],
@@ -14,149 +14,13 @@ quant = np.array([[16,11,10,16,24,40,51,61],      # QUANTIZATION TABLE
                     [72,92,95,98,112,100,103,99]])
 
 class DCT():    
-    def __init__(self): # Constructor
+    def __init__(self): 
         self.message = None
         self.bitMess = None
         self.oriCol = 0
         self.oriRow = 0
         self.numBits = 0   
-    #encoding part : 
-    def encode_image(self,img,secret_msg):
-        #show(img)
-        secret=secret_msg
-        self.message = str(len(secret))+'*'+secret
-        self.bitMess = self.toBits()
-        #get size of image in pixels
-        row,col = img.shape[:2]
-        ##col, row = img.size
-        self.oriRow, self.oriCol = row, col  
-        if((col/8)*(row/8)<len(secret)):
-            print("Error: Message too large to encode in image")
-            return False
-        #make divisible by 8x8
-        if row%8 != 0 or col%8 != 0:
-            img = self.addPadd(img, row, col)
-        
-        row,col = img.shape[:2]
-        ##col, row = img.size
-        #split image into RGB channels
-        bImg,gImg,rImg = cv2.split(img)
-        #message to be hid in blue channel so converted to type float32 for dct function
-        bImg = np.float32(bImg)
-        #break into 8x8 blocks
-        imgBlocks = [np.round(bImg[j:j+8, i:i+8]-128) for (j,i) in itertools.product(range(0,row,8),range(0,col,8))]
-        #Blocks are run through DCT function
-        dctBlocks = [np.round(cv2.dct(img_Block)) for img_Block in imgBlocks]
-        #blocks then run through quantization table
-        quantizedDCT = [np.round(dct_Block/quant) for dct_Block in dctBlocks]
-        #set LSB in DC value corresponding bit of message
-        messIndex = 0
-        letterIndex = 0
-        for quantizedBlock in quantizedDCT:
-            #find LSB in DC coeff and replace with message bit
-            DC = quantizedBlock[0][0]
-            DC = np.uint8(DC)
-            DC = np.unpackbits(DC)
-            DC[7] = self.bitMess[messIndex][letterIndex]
-            DC = np.packbits(DC)
-            DC = np.float32(DC)
-            DC= DC-255
-            quantizedBlock[0][0] = DC
-            letterIndex = letterIndex+1
-            if letterIndex == 8:
-                letterIndex = 0
-                messIndex = messIndex + 1
-                if messIndex == len(self.message):
-                    break
-        #blocks run inversely through quantization table
-        sImgBlocks = [quantizedBlock *quant+128 for quantizedBlock in quantizedDCT]
-        #blocks run through inverse DCT
-        #sImgBlocks = [cv2.idct(B)+128 for B in quantizedDCT]
-        #puts the new image back together
-        sImg=[]
-        for chunkRowBlocks in self.chunks(sImgBlocks, col/8):
-            for rowBlockNum in range(8):
-                for block in chunkRowBlocks:
-                    sImg.extend(block[rowBlockNum])
-        sImg = np.array(sImg).reshape(row, col)
-        #converted from type float32
-        sImg = np.uint8(sImg)
-        #show(sImg)
-        sImg = cv2.merge((sImg,gImg,rImg))
-        return sImg
 
-    # decoding part :
-    # Phần giải mã:
-    def decode_image(self, img, save_path=None):
-        row, col = img.shape[:2]
-        messageBits = []
-        buff = 0
-        messSize = None  # Thêm biến để lưu kích thước thông điệp
-
-        # Split image into RGB channels
-        bImg, gImg, rImg = cv2.split(img)
-
-        # Message hid in the blue channel, so convert it to type float32 for DCT function
-        bImg = np.float32(bImg)
-
-        # Break into 8x8 blocks
-        imgBlocks = [bImg[j:j+8, i:i+8] - 128 for (j, i) in itertools.product(range(0, row, 8), range(0, col, 8))]
-
-        i = 0
-
-        for img_Block in imgBlocks:
-            # Run through quantization table
-            quantizedBlock = img_Block / quant
-            # Extract message from LSB of DC coefficient
-            DC = quantizedBlock[0][0]
-            DC = np.uint8(DC)
-            DC = np.unpackbits(DC)
-
-            if DC[7] == 1:
-                buff += (0 & 1) << (7 - i)
-            elif DC[7] == 0:
-                buff += (1 & 1) << (7 - i)
-
-            i += 1
-
-            if i == 8:
-                messageBits.append(chr(buff))
-                buff = 0
-                i = 0
-
-                if messageBits[-1] == '*' and len(messageBits) > 1:
-                    try:
-                        messSize = int(''.join(messageBits[:-1]))
-                    except:
-                        pass
-
-            if len(messageBits) - len(str(messSize)) - 1 == messSize:
-                break
-
-        # Blocks run inversely through quantization table
-        sImgBlocks = [quantizedBlock * quant + 128 for quantizedBlock in imgBlocks]
-
-        # Reconstruct the image
-        sImg = []
-        for chunkRowBlocks in self.chunks(sImgBlocks, col / 8):
-            for rowBlockNum in range(8):
-                for block in chunkRowBlocks:
-                    sImg.extend(block[rowBlockNum])
-
-        sImg = np.array(sImg).reshape(row, col)
-
-        # Convert to uint8
-        sImg = np.uint8(sImg)
-        sImg = cv2.merge((sImg, gImg, rImg))
-
-        # Convert messageBits to a string
-        message = ''.join(messageBits)[len(str(messSize)) + 1:]
-        sImg_pil = Image.fromarray(sImg)
-
-        return sImg_pil, message  # Trả về hình ảnh và thông điệp dưới dạng chuỗi
-
-      
-    """Helper function to 'stitch' new image back together"""
     def chunks(self, l, n):
         m = int(n)
         for i in range(0, len(l), m):
@@ -171,5 +35,126 @@ class DCT():
             bits.append(binval)
         self.numBits = bin(len(bits))[2:].rjust(8,'0')
         return bits
+
+    def encode_image(self,img,secret_message):
+
+        secret=secret_message
+        self.message = str(len(secret))+'*'+secret
+        self.bitMess = self.toBits()
+        row,col = img.shape[:2]
+        self.oriRow, self.oriCol = row, col  
+        if((col/8)*(row/8)<len(secret)):
+            print("Error: Message too long to encode in image")
+            return False
+ 
+        if row%8 != 0 or col%8 != 0:
+            img = self.addPadd(img, row, col)
+        
+        row,col = img.shape[:2]
+        bImg,gImg,rImg = cv2.split(img)
+        bImg = np.float32(bImg)
+        imgBlocks = []
+        for (j,i) in itertools.product(range(0,row,8),range(0,col,8)):
+            block = bImg[j:j+8, i:i+8]
+            block -= 128
+            block = np.round(block)
+            imgBlocks.append(block)
+        dctBlocks = []
+        for img_Block in imgBlocks:
+            dct_block = np.round(cv2.dct(img_Block))
+            dctBlocks.append(dct_block)
+        quantizedDCT = []
+        for dct_Block in dctBlocks:
+            quantized_block = np.round(dct_Block / quant)
+            quantizedDCT.append(quantized_block)
+        
+        messIndex = 0
+        letterIndex = 0
+        for quantizedBlock in quantizedDCT:
+            DC = quantizedBlock[0][0]
+            DC = np.uint8(DC)
+            DC = np.unpackbits(DC)
+            DC[7] = self.bitMess[messIndex][letterIndex]
+            DC = np.packbits(DC)
+            DC = np.float32(DC)
+            DC= DC-255
+            quantizedBlock[0][0] = DC
+            letterIndex = letterIndex+1
+            if letterIndex == 8:
+                letterIndex = 0
+                messIndex = messIndex + 1
+                if messIndex == len(self.message):
+                    break
+        sImgBlocks = [quantizedBlock *quant+128 for quantizedBlock in quantizedDCT]
+        sImg=[]
+        for chunkRowBlocks in self.chunks(sImgBlocks, col/8):
+            for rowBlockNum in range(8):
+                for block in chunkRowBlocks:
+                    sImg.extend(block[rowBlockNum])
+        sImg = np.array(sImg).reshape(row, col)
+        sImg = np.uint8(sImg)
+        sImg = cv2.merge((sImg,gImg,rImg))
+        return sImg
+    
+
+    def decode_image(self,img):
+        row,col = img.shape[:2]
+        messSize = None
+        messageBits = []
+        buff = 0
+        try:
+            bImg, gImg, rImg = cv2.split(img)
+        except ValueError as e:
+            return Image.fromarray(img), str(e)
+        bImg = np.float32(bImg)
+
+        imgBlocks = []
+        for (j, i) in itertools.product(range(0, row, 8), range(0, col, 8)):
+            block = bImg[j:j+8, i:i+8]
+            block -= 128
+            imgBlocks.append(block)
+        # imgBlocks = [bImg[j:j+8, i:i+8]-128 for (j,i) in itertools.product(range(0,row,8),range(0,col,8))]
+        quantizedDCT = []
+        for img_Block in imgBlocks:
+            # quantized_block = img_Block / quant
+            quantized_block = img_Block / np.resize(quant, img_Block.shape)            
+            quantizedDCT.append(quantized_block)
+        # quantizedDCT = [img_Block/quant for img_Block in imgBlocks]
+        i=0
+        for quantizedBlock in quantizedDCT:
+            DC = quantizedBlock[0][0]
+            DC = np.uint8(DC)
+            DC = np.unpackbits(DC)
+            if DC[7] == 1:
+                buff+=(0 & 1) << (7-i)
+            elif DC[7] == 0:
+                buff+=(1&1) << (7-i)
+            i=1+i
+            if i == 8:
+                messageBits.append(chr(buff))
+                buff = 0
+                i =0
+                if messageBits[-1] == '*' and messSize is None:
+                    try:
+                        messSize = int(''.join(messageBits[:-1]))
+                    except:
+                        pass
+            if len(messageBits) - len(str(messSize)) - 1 == messSize:
+                break
+        sImgBlocks = [quantizedBlock *quant+128 for quantizedBlock in quantizedDCT]
+        sImgBlocks = [cv2.idct(B)+128 for B in quantizedDCT]
+        sImg=[]
+        for chunkRowBlocks in self.chunks(sImgBlocks, col // 8):
+            for rowBlockNum in range(8):
+                for block in chunkRowBlocks:
+                    sImg.extend(block[rowBlockNum])
+        sImg = np.array(sImg).reshape(row, col)
+        sImg = np.uint8(sImg)
+        sImg = cv2.merge((sImg,gImg,rImg))
+        message = ''.join(messageBits)[len(str(messSize))+1:]
+        sImg_pil = Image.fromarray(sImg)
+        return sImg_pil, message
+
+
     
   
