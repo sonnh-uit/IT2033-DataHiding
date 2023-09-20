@@ -1,0 +1,29 @@
+version: '3'
+services:
+  data-hiding:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    volumes:
+      - ./app/src:/app
+    working_dir: /app
+    # command: ["python3", "lsb/read_img.py"]
+    command: ["tail", "-f", "/dev/null"]
+  # steganogan:
+  #   build:
+  #     context: steganogan
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./steganogan/src:/app
+  #   working_dir: /app
+  #   command: ["python3", "input/test-case.py"]
+    # command: ["tail", "-f", "/dev/null"]
+  # report-build:
+  #   build:
+  #     context: report
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./report/src:/app
+  #   working_dir: /app
+  #   command: ["pdflatex", "IT2033.tex"]
+  #   image_path = "test/imgs/lena.png"
